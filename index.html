@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101923"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Compass Log"><link rel="icon" type="image/svg+xml" href="./icon.svg"><link rel="apple-touch-icon" href="./icon.svg"><link rel="manifest" href="./manifest.webmanifest"><title>Compass Error Log</title>
+<script src="./astronomy.browser.min.js"></script>
+<style>
+:root{color-scheme:dark;--panel:#14212d;--field:#0c1721;--line:#2c4051;--txt:#edf4f8;--muted:#9aabba;--accent:#70d6c5}*{box-sizing:border-box}body{margin:0;background:linear-gradient(150deg,#172a3a,#0b121a 55%);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--txt)}main{max-width:900px;margin:auto;padding:24px 15px 45px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.tag{color:var(--accent);font-size:11px;letter-spacing:.16em;font-weight:800}.top h1{font-size:clamp(26px,5vw,36px);margin:6px 0}.muted{color:var(--muted);font-size:13px}.mark{border:1px solid var(--line);border-radius:13px;padding:10px;color:var(--accent);font-weight:800}.tabs{display:flex;gap:6px;background:#09131c;padding:5px;border-radius:13px;margin-bottom:14px}.tabs button{flex:1;padding:11px 5px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:700}.tabs button.active{background:#203344;color:var(--txt)}.card{background:#14212def;border:1px solid var(--line);border-radius:16px;padding:17px;margin:13px 0}.card h2{font-size:16px;margin:0 0 14px}.section{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.1em;margin:19px 0 10px}.section:first-child{margin-top:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field span{font-size:11px;color:var(--muted);font-weight:700}.field input,.field select{width:100%;min-width:0;background:var(--field);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--txt);font:inherit;outline:none}.field input:focus,.field select:focus{border-color:var(--accent)}.full{grid-column:1/-1}.btn{border:0;border-radius:11px;background:var(--accent);color:#08201c;font-weight:850;padding:14px;width:100%;margin-top:14px;font-size:14px}.secondary{background:#203344;color:var(--txt);border:1px solid var(--line);padding:10px 12px;border-radius:10px;font-weight:700}.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric{background:#0b1721;border:1px solid var(--line);border-radius:12px;padding:13px}.metric small{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}.metric strong{font-size:24px;color:var(--accent)}.metric .detail{font-size:12px;color:var(--muted);margin-top:4px}.note{font-size:11px;color:var(--muted);line-height:1.5;margin:12px 0 0}.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}td,th{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line)}th{color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:18px}.hidden{display:none!important}.warning{background:#392a18;border:1px solid #72552b;color:#f5d9a7;border-radius:11px;padding:12px;font-size:12px;line-height:1.5;margin:12px 0}footer{text-align:center;color:var(--muted);font-size:11px;line-height:1.5;margin:24px 0}@media(max-width:600px){.three{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){main{padding:18px 11px 35px}.card{padding:14px}.field input,.field select{padding:11px}.tabs button{font-size:12px}.metric strong{font-size:21px}}
+.time-panel{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.time-panel>.field{flex:1 1 100%}.time-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;flex:1 1 100%}.time-fields .field{min-width:0}.time-fields select{width:100%;font-variant-numeric:tabular-nums}.time-panel .utc-now{flex:1}.time-panel .field{flex:1}.utc-chip{background:#0b1721;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--muted);font-size:12px;white-space:nowrap}.utc-chip b{color:var(--accent);margin-left:5px}.position-panel{background:linear-gradient(145deg,#102330,#0c1721);border:1px solid #294456;border-radius:14px;padding:14px}.position-head,.position-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.position-head{margin-bottom:9px}.position-head b{display:block;font-size:13px}.position-head small{color:var(--muted);font-size:10px}.coord-control{display:flex;align-items:center;gap:5px;min-width:0;background:#08131d;border:1px solid #2c4051;border-radius:11px;padding:6px}.coord-control select{appearance:none;-webkit-appearance:none;min-width:0;flex:1;background:#152635;border:1px solid #30495b;border-radius:8px;color:var(--txt);font:600 15px -apple-system,BlinkMacSystemFont,sans-serif;text-align:center;padding:10px 2px;outline:none}.coord-control select:focus{border-color:var(--accent)}.coord-control span{color:var(--muted);font-size:12px}.coord-control select:last-child{flex:0 0 40px;color:var(--accent)}.position-hint{font-size:10px;color:var(--muted);margin-top:10px}.time-panel input{font-variant-numeric:tabular-nums}@media(max-width:560px){.time-panel{align-items:stretch}.utc-chip{display:flex;align-items:center}.position-panel{padding:11px}.position-head,.position-grid{gap:7px}.coord-control{gap:3px;padding:5px 3px}.coord-control select{font-size:14px;padding:11px 0}.coord-control select:last-child{flex-basis:34px}}.app-version{display:flex;justify-content:center;align-items:center;gap:9px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:10px;letter-spacing:.08em;color:var(--muted)}.app-version b{color:var(--accent);font-size:11px}.app-version span{opacity:.7}
+/* v1.4.0 visual refresh */
+:root{color-scheme:dark;--panel:rgba(20,34,48,.76);--field:#0a1622;--line:rgba(160,190,210,.16);--txt:#f2f6fa;--muted:#91a5b7;--accent:#b8d5dc;--gold:#d7b77a;--glow:rgba(150,195,210,.12)}
+body{background:radial-gradient(ellipse at 50% -18%,#29475b 0%,#142536 38%,#09121d 78%);background-attachment:fixed;letter-spacing:.005em}
+main{max-width:980px;padding:28px 18px 56px}
+.top{padding:5px 2px 20px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.tag{font-size:10px;letter-spacing:.22em;color:#b9cbd4}
+.top h1{font-size:clamp(29px,5.6vw,40px);font-weight:750;letter-spacing:-.045em;margin:8px 0 5px}
+.top .muted{font-size:13px;letter-spacing:.025em}
+.mark{width:54px;height:54px;display:grid;place-content:center;text-align:center;border-radius:18px;padding:0;border:1px solid rgba(215,183,122,.35);background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.025));box-shadow:inset 0 1px rgba(255,255,255,.12),0 8px 24px #0004;color:var(--gold);font-size:11px;line-height:1.45;letter-spacing:.12em}
+.tabs{position:sticky;top:8px;z-index:5;background:rgba(7,17,27,.78);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border:1px solid var(--line);padding:5px;border-radius:15px;box-shadow:0 10px 28px #0003}
+.tabs button{font-size:13px;letter-spacing:.015em;transition:background .2s,color .2s}
+.tabs button.active{background:linear-gradient(135deg,rgba(188,215,224,.2),rgba(188,215,224,.08));box-shadow:inset 0 0 0 1px rgba(190,220,230,.18);color:#f5fbff}
+.card{background:linear-gradient(145deg,rgba(23,41,57,.88),rgba(12,25,38,.92));border:1px solid rgba(170,198,214,.16);border-radius:22px;padding:22px;margin:15px 0;box-shadow:0 16px 44px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.045);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.card h2{font-size:17px;letter-spacing:-.02em}
+.section{font-size:10px;letter-spacing:.18em;color:#b9cbd4;margin:24px 0 12px}
+.section:first-child{margin-top:0}
+.field{gap:8px}
+.field span{font-size:10px;letter-spacing:.075em;color:#9fb2c1}
+.field input,.field select{background:rgba(5,16,27,.72);border:1px solid rgba(154,184,204,.19);border-radius:13px;padding:14px 13px;min-height:48px;box-shadow:inset 0 1px 3px #0003;transition:border-color .18s,background .18s,box-shadow .18s}
+.field input:focus,.field select:focus{border-color:#a9cbd5;background:#0b1c2b;box-shadow:0 0 0 3px rgba(169,203,213,.10);outline:none}
+.field input::placeholder{color:#647b8d}
+.time-panel{gap:14px}
+.utc-chip{background:rgba(5,16,27,.72);border:1px solid var(--line);border-radius:13px;padding:14px 15px;min-height:48px}
+.position-panel{background:linear-gradient(145deg,rgba(29,53,70,.8),rgba(8,21,33,.8));border:1px solid rgba(157,193,208,.19);border-radius:17px;padding:16px;box-shadow:inset 0 1px rgba(255,255,255,.04)}
+.position-head b{font-size:13px;letter-spacing:.02em}
+.position-hint{line-height:1.5;margin-top:12px}
+.coord-control{background:rgba(4,14,24,.68);border-color:rgba(154,184,204,.17);border-radius:13px;padding:7px}
+.coord-control select{background:#14293a;border-color:rgba(154,184,204,.16);border-radius:9px;min-height:42px}
+.metric{background:linear-gradient(145deg,rgba(7,20,32,.92),rgba(12,29,43,.82));border:1px solid rgba(157,190,207,.17);border-radius:17px;padding:16px;box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.metric small{font-size:9px;letter-spacing:.12em;color:#a2b5c3;font-weight:750}
+.metric strong{font-size:clamp(23px,4vw,30px);font-weight:720;letter-spacing:-.035em;color:#d7e8ed;font-variant-numeric:tabular-nums}
+.metric .detail{font-size:11px;line-height:1.45}
+#azPreview{background:linear-gradient(120deg,rgba(25,54,69,.94),rgba(10,25,39,.96));border:1px solid rgba(177,210,219,.25)!important;border-radius:18px;padding:17px;box-shadow:inset 0 1px rgba(255,255,255,.07),0 10px 26px #0002}
+#azPreview strong{display:block;font-size:clamp(30px,6vw,38px);margin-top:5px;color:#d5e9ed;letter-spacing:-.04em}
+.btn{background:linear-gradient(135deg,#d6e5e8,#9dbdc5);color:#10232d;border-radius:14px;padding:16px;font-size:12px;letter-spacing:.075em;box-shadow:0 8px 22px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.55);transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.99);filter:brightness(.94)}
+.secondary{background:rgba(24,43,59,.8);border:1px solid rgba(164,193,209,.2);border-radius:12px;color:#dce8ee}
+.warning{background:rgba(89,63,29,.28);border:1px solid rgba(210,165,92,.32);color:#e9d4ad;border-radius:14px;padding:14px;line-height:1.6}
+.note{line-height:1.65;color:#91a5b7}
+table{font-size:11px}
+td,th{padding:11px 9px;border-bottom-color:rgba(160,190,210,.12)}
+th{font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+footer{line-height:1.7;margin:28px 8px 18px}
+.app-version{border-top-color:var(--line);letter-spacing:.12em;padding-top:15px}
+.app-version b{color:var(--gold)}
+.validation-box{display:none;border:1px solid rgba(210,165,92,.35);background:rgba(89,63,29,.22);border-radius:13px;padding:13px 15px;margin:14px 0;color:#ead7b5;font-size:12px;line-height:1.6}.validation-box.show{display:block}.validation-box.error{border-color:rgba(222,112,99,.5);background:rgba(100,35,30,.24);color:#f0c1b9}.validation-box ul{margin:7px 0 0;padding-left:18px}.validation-box li+li{margin-top:4px}.field input.invalid,.coord-control.invalid{border-color:#d97869!important;box-shadow:0 0 0 2px rgba(217,120,105,.12)!important}
+@media(max-width:600px){
+ main{padding:20px 12px 38px}
+ .card{padding:17px;border-radius:19px;margin:12px 0}
+ .section{margin:21px 0 11px}
+ .metric{padding:14px;border-radius:15px}
+ .metric strong{font-size:24px}
+ .position-panel{padding:12px}
+}
+@media(max-width:420px){
+ main{padding-left:10px;padding-right:10px}
+ .top{padding-bottom:16px}
+ .mark{width:48px;height:48px;border-radius:15px}
+ .field input,.field select{padding:12px 10px;min-height:46px}
+ .coord-control select{min-height:40px}
+ .tabs button{padding:12px 5px}
+ .btn{padding:15px 10px;font-size:11px}
+}
+
+/* v1.7.0: high-contrast calculation result hierarchy */
+.result-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.result-heading h2{font-size:22px;letter-spacing:-.045em;margin:5px 0 0}
+.result-kicker{font-size:9px;font-weight:800;letter-spacing:.2em;color:var(--gold)}
+.result-stamp{width:44px;height:44px;border-radius:14px;display:grid;place-content:center;text-align:center;line-height:1.35;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--gold);border:1px solid rgba(215,183,122,.34);background:rgba(215,183,122,.06)}
+.result-hero-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:12px}
+.result-hero{position:relative;overflow:hidden;min-width:0;border-radius:21px;padding:21px 19px 17px;border:1px solid rgba(190,220,230,.2);box-shadow:inset 0 1px rgba(255,255,255,.09),0 14px 32px rgba(0,0,0,.24)}
+.result-hero:after{content:"";position:absolute;width:180px;height:180px;right:-75px;top:-90px;border-radius:50%;background:rgba(220,240,245,.07);filter:blur(2px);pointer-events:none}
+.ce-hero{background:radial-gradient(ellipse at 85% 0%,rgba(178,215,223,.22),transparent 55%),linear-gradient(145deg,#234354,#102432 72%)}
+.dev-hero{background:radial-gradient(ellipse at 85% 0%,rgba(215,183,122,.17),transparent 55%),linear-gradient(145deg,#3b3540,#1c2632 72%);border-color:rgba(215,183,122,.24)}
+.hero-label{font-size:10px;font-weight:850;letter-spacing:.17em;color:#c4d8df}
+.dev-hero .hero-label{color:#e2c994}
+.result-hero strong{display:block;position:relative;z-index:1;margin:15px 0 8px;font-size:clamp(34px,6.5vw,51px);line-height:1.02;letter-spacing:-.055em;font-weight:760;font-variant-numeric:tabular-nums;color:#f1fafb;white-space:nowrap}
+.dev-hero strong{font-size:clamp(29px,5.5vw,42px);color:#f4e5c7}
+.hero-formula{font-size:10px;color:rgba(224,237,242,.72);line-height:1.5}
+.hero-foot{border-top:1px solid rgba(220,240,245,.15);margin-top:15px;padding-top:10px;font-size:9px;letter-spacing:.13em;color:rgba(224,237,242,.58)}
+.result-subtitle{margin:23px 0 11px;font-size:9px;font-weight:850;letter-spacing:.2em;color:#a9bdc9}
+#result .results{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#result .metric{padding:15px 16px;min-height:93px}
+#result .metric strong{display:block;margin-top:4px}
+#result .warning{margin-top:16px}
+@media(max-width:520px){
+ .result-hero-grid{grid-template-columns:1fr 1fr;gap:8px}
+ .result-hero{padding:16px 12px 13px;border-radius:17px}
+ .result-hero strong{font-size:clamp(27px,7.5vw,38px);margin:13px 0 7px}
+ .dev-hero strong{font-size:clamp(25px,6.8vw,34px)}
+ .hero-label{font-size:9px;letter-spacing:.12em}
+ .hero-formula{font-size:9px}
+ .hero-foot{font-size:8px;letter-spacing:.08em;margin-top:12px}
+ .result-heading h2{font-size:20px}
+}
+
+/* v1.7.0: bridge-ready mobile ergonomics */
+html{scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{padding-bottom:env(safe-area-inset-bottom)}
+main{padding-top:max(20px,env(safe-area-inset-top))}
+button,.field input,.field select,.coord-control select{touch-action:manipulation}
+button{min-height:44px;-webkit-tap-highlight-color:transparent}
+.field input,.field select{font-size:16px}
+.coord-control select{font-size:16px}
+.tabs{top:max(8px,env(safe-area-inset-top))}
+#deviceStatus{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 13px;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:rgba(5,16,27,.62);font-size:11px;color:var(--muted)}
+#deviceStatus .status-left{display:flex;align-items:center;gap:8px}
+#deviceStatus .status-dot{width:8px;height:8px;border-radius:50%;background:#d7b77a;box-shadow:0 0 0 3px rgba(215,183,122,.12)}
+#deviceStatus.online .status-dot{background:#77d6a5;box-shadow:0 0 0 3px rgba(119,214,165,.12)}
+#deviceStatus.offline .status-dot{background:#e2b36e;box-shadow:0 0 0 3px rgba(226,179,110,.12)}
+#deviceStatus .status-detail{font-size:10px;white-space:nowrap}
+.backup-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.backup-actions button{flex:1;min-width:125px}
+#backupFile{display:none}
+@media(max-width:520px){main{padding-left:12px;padding-right:12px}.field input,.field select{min-height:50px}.coord-control select{min-height:46px}.btn{min-height:50px}.secondary{min-height:44px}.backup-actions{display:grid;grid-template-columns:1fr 1fr}.backup-actions button{min-width:0;padding:10px 8px;font-size:11px}}
+@media(max-width:360px){.position-grid{grid-template-columns:1fr}.position-head{display:none}}
+ .utc-now{align-self:end;min-height:48px;padding:0 15px;white-space:nowrap}.time-panel{flex-wrap:wrap}@media(max-width:560px){.utc-now{min-height:50px;padding:0 13px}}
+#updateNotice{display:none;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px;padding:12px 13px;border:1px solid rgba(184,213,220,.28);border-radius:13px;background:linear-gradient(120deg,rgba(37,67,82,.94),rgba(13,29,43,.96));box-shadow:0 8px 24px #0003}#updateNotice.show{display:flex}#updateNotice .update-copy{font-size:12px;line-height:1.45;color:#dce9ed}#updateNotice .update-copy b{display:block;color:#f3f8fa;font-size:13px}#updateNotice button{flex:0 0 auto;margin:0;padding:10px 13px;min-height:40px;font-size:11px}
+/* v1.10.0: standalone manual Quick Calculator */
+#quick .results{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#quick .metric{min-height:96px}
+#quick .metric strong{display:block;margin-top:5px}
+@media(max-width:420px){.tabs button{font-size:11px;padding-left:3px;padding-right:3px}}
+/* v1.9.0: searchable celestial selector and visibility catalog */
+.celestial-picker{background:linear-gradient(145deg,rgba(9,23,36,.72),rgba(15,32,46,.78));border:1px solid var(--line);border-radius:17px;padding:14px;margin:10px 0 14px}
+.category-tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;margin-top:10px;scrollbar-width:none}.category-tabs::-webkit-scrollbar{display:none}
+.category-tabs button{flex:0 0 auto;min-height:38px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(5,16,27,.55);color:var(--muted);font-size:11px;font-weight:750}
+.category-tabs button.active{background:rgba(184,213,220,.17);border-color:rgba(184,213,220,.42);color:#edf7fa}
+.quick-label{display:block;width:100%;margin:10px 0 5px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.12em;line-height:1.35;white-space:normal}.angle-adjust{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;gap:6px;align-items:center}.angle-adjust input{min-width:0;width:100%}.angle-adjust button{height:42px;border:1px solid var(--line);border-radius:10px;background:rgba(115,157,170,.16);color:var(--txt);font-size:20px;font-weight:700;touch-action:manipulation}.angle-adjust button:active{background:rgba(115,157,170,.32)}.field-hint{display:block;margin-top:5px;color:var(--muted);font-size:9px}.catalog-heading{font-size:9px;font-weight:850;letter-spacing:.16em;color:#a9bdc9;margin:10px 0}
+.quick-stars{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:thin}.catalog-toggle{display:flex;align-items:center;gap:8px;margin:4px 0 10px;color:var(--muted);font-size:11px}.catalog-toggle input{accent-color:#b8d5dc;width:17px;height:17px}
+.quick-stars button{flex:0 0 auto;min-height:36px;padding:8px 11px;border:1px solid rgba(215,183,122,.24);border-radius:10px;background:rgba(215,183,122,.07);color:#ead8b6;font-size:11px;font-weight:750}
+.catalog-heading{display:flex;justify-content:space-between;align-items:center;margin:8px 0}
+.catalog-heading span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+.celestial-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:300px;overflow-y:auto;padding:1px}
+.celestial-option{display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:5px;min-width:0;min-height:64px;padding:10px;border:1px solid var(--line);border-radius:12px;background:rgba(5,16,27,.55);color:var(--txt)}
+.celestial-option.selected{border-color:#b8d5dc;background:rgba(115,157,170,.18);box-shadow:inset 0 0 0 1px rgba(184,213,220,.1)}
+.celestial-option.low-alt{border-color:rgba(215,183,122,.42)}
+.celestial-option b{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.celestial-option small{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.celestial-option .low-tag{color:#e7c58d}
+.catalog-empty{grid-column:1/-1;padding:17px 10px;text-align:center;color:var(--muted);font-size:11px;line-height:1.5}
+.catalog-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:10px}
+#selectedVisibility{margin-top:5px;color:#d8c39a}
+@media(max-width:420px){.celestial-picker{padding:11px}.celestial-list{gap:6px}.celestial-option{padding:9px;min-height:62px}.category-tabs button{padding:8px 10px}}
+</style></head><body><main>
+<div class="top"><div><div class="tag">BRIDGE TOOLS · NAVIGATION</div><h1>Compass Error Log</h1><div class="muted">Celestial observation calculator</div></div><div class="mark">CC<br>LOG</div></div>
+<div id="updateNotice" role="status" aria-live="polite"><div class="update-copy"><b>Доступна новая версия</b><span id="updateVersion">Обновление Compass Error Log</span></div><button class="secondary" id="applyUpdate" type="button">Обновить</button></div><div id="deviceStatus" class="offline" role="status" aria-live="polite"><div class="status-left"><span class="status-dot"></span><b id="connectionLabel">Проверка режима...</b></div><span class="status-detail" id="cacheLabel">Локальное сохранение</span></div><div class="tabs"><button class="active" data-view="entry">Новая запись</button><button data-view="quick">Quick Calc</button><button data-view="history">Журнал</button><button data-view="deviation">Deviation Card</button></div>
+<section id="entry"><div class="card">
+<div class="section">OBSERVATION TIME · GMT / UTC</div>
+<div class="time-panel"><label class="field"><span>DATE (GMT)</span><input id="gmtDate" type="date"></label><div class="time-fields"><label class="field"><span>HOUR</span><select id="gmtHour" aria-label="GMT hour"></select></label><label class="field"><span>MINUTE</span><select id="gmtMinute" aria-label="GMT minute"></select></label><label class="field"><span>SECOND</span><select id="gmtSecond" aria-label="GMT second"></select></label></div><button class="secondary utc-now" id="setUtcNow" type="button">NOW</button><div class="utc-chip">UTC <b>+00:00</b></div></div>
+<div class="section">SHIP'S POSITION</div>
+<div class="position-panel">
+ <div class="position-head"><div><b>Latitude</b><small>North / South</small></div><div><b>Longitude</b><small>East / West</small></div></div>
+ <div class="position-grid">
+  <div class="coord-control"><select id="latDeg" aria-label="Latitude degrees"></select><span>°</span><select id="latMin" aria-label="Latitude whole minutes"></select><span>.</span><select id="latMinDec" aria-label="Latitude minute tenths"></select><span>′</span><select id="latHem" aria-label="Latitude hemisphere"><option>N</option><option>S</option></select></div>
+  <div class="coord-control"><select id="lonDeg" aria-label="Longitude degrees"></select><span>°</span><select id="lonMin" aria-label="Longitude whole minutes"></select><span>.</span><select id="lonMinDec" aria-label="Longitude minute tenths"></select><span>′</span><select id="lonHem" aria-label="Longitude hemisphere"><option>E</option><option>W</option></select></div>
+ </div>
+ <div class="position-hint">Градусы, целые минуты и десятые минуты выбираются отдельно. Точность до 0.1′</div>
+</div>
+<div class="section">CELESTIAL BODY · OBJECT SELECTOR</div>
+<div class="celestial-picker">
+ <label class="field"><span>SEARCH OBJECT BY NAME</span><input id="bodySearch" type="search" autocomplete="off" placeholder="Например, Sirius, Venus, Polaris"></label>
+ <div class="category-tabs" id="bodyCategories">
+  <button type="button" class="active" data-category="all">All objects</button><button type="button" data-category="star">Stars</button><button type="button" data-category="planet">Planets</button><button type="button" data-category="luminary">Sun / Moon</button>
+ </div>
+ <div class="quick-label">QUICK ACCESS  ·  SUN · MOON · PLANETS · STARS</div>
+ <div class="quick-stars" id="quickStars"></div>
+ <label class="catalog-toggle"><input id="showBelowHorizonStars" type="checkbox"> <span>Show stars below horizon</span></label>
+ <div class="catalog-heading"><span id="catalogTitle">VISIBLE OBJECTS</span><span id="catalogCount">—</span></div>
+ <div class="celestial-list" id="celestialList"><div class="catalog-empty">Введи дату и координаты, чтобы рассчитать видимость</div></div>
+ <div class="catalog-note">Показан каталог небесных тел. Отрицательная высота означает, что объект находится ниже геометрического горизонта. Высота и азимут рассчитываются для введённых GMT и координат судна.</div>
+</div>
+<label class="hidden"><select id="bodyType"><option value="Sun">Sun</option><option value="Moon">Moon</option><option value="planet">Planet</option><option value="star">Star</option></select></label>
+<label class="hidden" id="planetWrap"><select id="planet"><option>Mercury</option><option>Venus</option><option>Mars</option><option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option><option>Pluto</option></select></label>
+<label class="hidden" id="starNameWrap"><select id="starName"></select></label>
+<div class="metric full" id="azPreview" style="margin:12px 0"><small>AUTOMATIC TRUE AZIMUTH / TRUE BEARING</small><strong id="azPreviewValue">—</strong><div class="detail" id="azPreviewDetail">Выбери объект и введи дату GMT и координаты</div><div class="detail" id="selectedVisibility"></div></div>
+<div class="section">SHIP'S HEAD & OBSERVED BEARING</div><div class="grid three">
+<label class="field"><span>GYRO HEADING (°)</span><input id="headGyro" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="Gyro course"></label>
+<label class="field"><span>COMPASS HEADING (°)</span><input id="headMag" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="Magnetic compass course"></label>
+<label class="field"><span>GYRO BEARING TO BODY (°)</span><div class="angle-adjust"><button type="button" data-angle-target="gyroBearing" data-angle-step="-0.1" aria-label="Decrease gyro bearing">−</button><input id="gyroBearing" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="Observed bearing"><button type="button" data-angle-target="gyroBearing" data-angle-step="0.1" aria-label="Increase gyro bearing">+</button></div><small class="field-hint">Fine adjustment · 0.1° per tap</small></label>
+</div>
+<div class="section">CHART VARIATION</div><div class="grid">
+<label class="field"><span>VARIATION VALUE (°)</span><input id="varVal" type="number" inputmode="decimal" min="0" max="180" step=".1" placeholder="Chart value"></label>
+<label class="field"><span>DIRECTION</span><select id="varDir"><option value="1">EAST (E)</option><option value="-1">WEST (W)</option></select></label>
+</div>
+<div class="grid" style="margin-top:11px"><label class="field"><span>HEEL (°)</span><input id="heel" type="number" inputmode="decimal" step=".1" placeholder="Optional"></label><label class="field"><span>INITIALS</span><input id="initials" placeholder="Officer initials"></label><label class="field full"><span>REMARKS</span><input id="remarks" placeholder="Optional notes"></label></div>
+<div class="warning">Время вводится именно в GMT/UTC, не в местном судовом времени. Для звёзд используется встроенный каталог навигационных звёзд с координатами J2000. True Azimuth автоматически обновляется при изменении даты, времени, координат или выбранного объекта.</div>
+<div id="validationBox" class="validation-box" role="status" aria-live="polite"></div><button class="btn" id="calculate">CALCULATE CELESTIAL AZIMUTH & ERRORS</button>
+<p class="note">Расчёт истинного азимута выполняется астрономической библиотекой Astronomy Engine. Для объектов Солнечной системы используется топоцентрическое положение с учётом координат наблюдателя. Азимут отсчитывается от истинного севера по часовой стрелке.</p>
+</div>
+<div class="card hidden" id="result">
+<div class="result-heading"><div><div class="result-kicker">OBSERVATION COMPLETE</div><h2>Compass correction</h2></div><div class="result-stamp">CE<br>LOG</div></div>
+<div class="result-hero-grid">
+ <div class="result-hero ce-hero"><div class="hero-label">COMPASS ERROR</div><strong id="ceOut">—</strong><div class="hero-formula">True Heading − Compass Heading</div><div class="hero-foot">EAST (+) / WEST (−)</div></div>
+ <div class="result-hero dev-hero"><div class="hero-label">DEVIATION</div><strong id="devOut">—</strong><div class="hero-formula">Compass Error − Variation</div><div class="hero-foot">EAST (+) / WEST (−)</div></div>
+</div>
+<div class="result-subtitle">CALCULATION DETAILS</div>
+<div class="results">
+ <div class="metric"><small>TRUE AZIMUTH</small><strong id="taOut">—</strong><div class="detail" id="altOut">Altitude —</div></div>
+ <div class="metric"><small>GYRO ERROR</small><strong id="geOut">—</strong><div class="detail">TA − Gyro Bearing</div></div>
+ <div class="metric"><small>TRUE HEADING</small><strong id="thOut">—</strong><div class="detail">Gyro Heading + Gyro Error</div></div>
+ <div class="metric"><small>CHART VARIATION</small><strong id="varOut">—</strong><div class="detail">Entered chart value</div></div>
+</div>
+<div class="warning" id="visibilityNote"></div><div id="mainDeviationCardCheck" class="warning hidden"></div><button class="btn" id="save">SAVE OBSERVATION TO LOG</button></div></section>
+<section id="quick" class="hidden"><div class="card">
+<div class="section">QUICK CALCULATOR · MANUAL INPUT</div>
+<h2 style="margin:0 0 8px">Gyro / Compass calculations</h2>
+<p class="note" style="margin:0 0 16px">Расчёт без астрономического наблюдения. Введи истинный пеленг, гиропеленг, курс гирокомпаса, курс магнитного компаса и магнитное склонение с карты.</p>
+<div class="grid">
+<label class="field"><span>TRUE BEARING (°)</span><input id="qTrueBearing" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="True bearing"></label>
+<label class="field"><span>GYRO BEARING (°)</span><div class="angle-adjust"><button type="button" data-angle-target="qGyroBearing" data-angle-step="-0.1" aria-label="Decrease gyro bearing">−</button><input id="qGyroBearing" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="Gyro bearing"><button type="button" data-angle-target="qGyroBearing" data-angle-step="0.1" aria-label="Increase gyro bearing">+</button></div><small class="field-hint">Fine adjustment · 0.1° per tap</small></label>
+<label class="field"><span>GYRO HEADING (°)</span><input id="qGyroHeading" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="Gyro heading"></label>
+<label class="field"><span>COMPASS HEADING (°)</span><input id="qCompassHeading" type="number" inputmode="decimal" min="0" max="360" step=".1" placeholder="Compass heading"></label>
+<label class="field"><span>VARIATION (°)</span><input id="qVariation" type="number" inputmode="decimal" min="0" max="180" step=".1" placeholder="Chart variation"></label>
+<label class="field"><span>VARIATION DIRECTION</span><select id="qVariationDirection"><option value="1">EAST (E)</option><option value="-1">WEST (W)</option></select></label>
+</div>
+<div id="quickValidation" class="validation-box" aria-live="polite"></div>
+<button class="btn" id="quickCalculate" type="button">CALCULATE</button>
+<div id="quickResults" class="hidden">
+<div class="result-subtitle">CALCULATION RESULTS</div>
+<div class="results">
+<div class="metric"><small>GYRO ERROR</small><strong id="qGyroError">—</strong><div class="detail">True Bearing − Gyro Bearing</div></div>
+<div class="metric"><small>TRUE HEADING</small><strong id="qTrueHeading">—</strong><div class="detail">Gyro Heading + Gyro Error</div></div>
+<div class="metric"><small>COMPASS ERROR</small><strong id="qCompassError">—</strong><div class="detail">True Heading − Compass Heading</div></div>
+<div class="metric"><small>DEVIATION</small><strong id="qDeviation">—</strong><div class="detail">Compass Error − Variation</div></div>
+</div>
+<p class="note">East (+), West (−). Угловые разности нормализуются к ±180°.</p><div id="qDeviationCardCheck" class="warning hidden" style="margin-top:14px"></div>
+</div>
+</div></section>
+<section id="deviation" class="hidden"><div class="card">
+<div class="section">MAGNETIC COMPASS · DEVIATION CARD</div>
+<h2 style="margin:0 0 8px">Ship's Deviation Card</h2>
+<p class="note" style="margin:0 0 14px">Certificate data entered from the vessel's card. Positive = East, negative = West. Edit the values below if the official card is updated.</p>
+<div class="grid">
+<label class="field"><span>000° DEVIATION (°)</span><input class="dev-card-value" id="devCard000" type="number" inputmode="decimal" step=".1" value="-0.1"></label>
+<label class="field"><span>045° DEVIATION (°)</span><input class="dev-card-value" id="devCard045" type="number" inputmode="decimal" step=".1" value="0.6"></label>
+<label class="field"><span>090° DEVIATION (°)</span><input class="dev-card-value" id="devCard090" type="number" inputmode="decimal" step=".1" value="-0.9"></label>
+<label class="field"><span>135° DEVIATION (°)</span><input class="dev-card-value" id="devCard135" type="number" inputmode="decimal" step=".1" value="-1.9"></label>
+<label class="field"><span>180° DEVIATION (°)</span><input class="dev-card-value" id="devCard180" type="number" inputmode="decimal" step=".1" value="-0.9"></label>
+<label class="field"><span>225° DEVIATION (°)</span><input class="dev-card-value" id="devCard225" type="number" inputmode="decimal" step=".1" value="0.1"></label>
+<label class="field"><span>270° DEVIATION (°)</span><input class="dev-card-value" id="devCard270" type="number" inputmode="decimal" step=".1" value="0.1"></label>
+<label class="field"><span>315° DEVIATION (°)</span><input class="dev-card-value" id="devCard315" type="number" inputmode="decimal" step=".1" value="-1"></label>
+<label class="field"><span>WARNING THRESHOLD (°)</span><input id="devWarnThreshold" type="number" inputmode="decimal" min="0" max="30" step=".1" value="2"></label>
+<label class="field"><span>CRITICAL THRESHOLD (°)</span><input id="devCriticalThreshold" type="number" inputmode="decimal" min="0" max="30" step=".1" value="3"></label>
+<label class="field full"><span>IMO RECERTIFY DATE</span><input id="devCardDate" type="text" value="21 Apr 2028"></label>
+</div>
+<div id="devCardStatus" class="note" style="margin-top:12px"></div>
+<div class="backup-actions"><button class="secondary" id="saveDeviationCard" type="button">Save Deviation Card</button><button class="secondary" id="resetDeviationCard" type="button">Restore certificate values</button></div>
+<p class="note">Reference values: N −0.1°, NE +0.6°, E −0.9°, SE −1.9°, S −0.9°, SW +0.1°, W +0.1°, NW −1.0°. Interpolation is circular across 315°–000°.</p>
+</div></section>
+<section id="history" class="hidden"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px"><h2 style="margin:0">Saved observations</h2><button class="secondary" id="export">Export CSV</button></div><div class="backup-actions"><button class="secondary" id="backupExport">Сохранить резервную копию</button><button class="secondary" id="backupImport">Восстановить из файла</button><input id="backupFile" type="file" accept=".json,application/json"></div><p class="note">Резервная копия содержит сохранённые наблюдения. Храни файл отдельно от телефона.</p><div class="tablewrap"><table><thead><tr><th>GMT</th><th>Position</th><th>Body</th><th>TA</th><th>Gyro Brg</th><th>Gyro Err</th><th>Gyro Head</th><th>Compass Head</th><th>True Head</th><th>Compass Err</th><th>Var</th><th>Dev</th><th>Alt</th><th>Remarks</th><th>Initials</th></tr></thead><tbody id="rows"><tr><td colspan="15" class="empty">Пока нет записей</td></tr></tbody></table></div><button class="secondary" id="clear" style="width:100%;margin-top:13px">Clear log</button></div></section>
+<footer>East (+), West (−). Все угловые разности нормализуются к ±180°.<br>Не использовать как единственный источник для навигационных решений. Сверяйте с Nautical Almanac / approved bridge procedures.<div class="app-version">COMPASS ERROR LOG <b>v1.15.2</b><span>BUILD 2026-11-22 · NUMERIC KEYBOARD</span></div></footer>
+</main>
+<script>
+const $=id=>document.getElementById(id), norm=x=>((x%360)+360)%360, diff=(a,b)=>{let d=norm(a-b);return d>180?d-360:d}, f=x=>Number.isFinite(x)?norm(x).toFixed(1)+'°':'—', signed=x=>Number.isFinite(x)?(x>=0?'+':'−')+Math.abs(x).toFixed(1)+'° '+(x>=0?'E':'W'):'—';
+let current=null,log=[];try{log=JSON.parse(localStorage.getItem('compassErrorLog')||'[]')}catch{}
+function setDefaultTime(){const d=new Date();$('gmtDate').value=d.toISOString().slice(0,10);$('gmtHour').value=String(d.getUTCHours());$('gmtMinute').value=String(d.getUTCMinutes());$('gmtSecond').value=String(d.getUTCSeconds())}
+setDefaultTime();
+$('setUtcNow').onclick=()=>{setDefaultTime();saveDraft();updateAzimuthPreview()};
+const NAV_STARS=[
+['Acamar',2.9710,-40.3047],['Achernar',1.6286,-57.2368],['Acrux',12.4433,-63.0991],['Adhara',6.9771,-28.9721],['Aldebaran',4.5987,16.5093],['Alioth',12.9005,55.9598],['Alkaid',13.7923,49.3133],['Al Na’ir',22.1372,-46.9609],['Alnilam',5.6036,-1.2019],['Alphard',9.4598,-8.6586],['Alphecca',15.5781,26.7147],['Altair',19.8464,8.8683],['Ankaa',0.4380,-42.3060],['Antares',16.4901,-26.4320],['Arcturus',14.2610,19.1824],['Atria',16.8111,-69.0277],['Avior',8.3752,-59.5095],['Bellatrix',5.4189,6.3497],['Betelgeuse',5.9195,7.4071],['Canopus',6.3992,-52.6957],['Capella',5.2782,45.9980],['Deneb',20.6905,45.2803],['Denebola',11.8177,14.5721],['Diphda',0.7265,-17.9866],['Dubhe',11.0621,61.7508],['Elnath',5.4382,28.6075],['Eltanin',17.9434,51.4889],['Enif',21.7364,9.8750],['Fomalhaut',22.9608,-29.6222],['Gacrux',12.5194,-57.1132],['Gienah',12.2634,-17.5419],['Hadar',14.0637,-60.3730],['Hamal',2.1196,23.4624],['Kaus Australis',18.4029,-34.3846],['Kochab',14.8451,74.1555],['Markab',23.0793,15.2053],['Menkar',3.0379,4.0897],['Menkent',14.1114,-36.3700],['Miaplacidus',9.2200,-69.7172],['Mirfak',3.4054,49.8612],['Nunki',18.9211,-26.2967],['Peacock',20.4275,-56.7351],['Polaris',2.5303,89.2641],['Pollux',7.7553,28.0262],['Procyon',7.6550,5.2250],['Rasalhague',17.5822,12.5600],['Regulus',10.1395,11.9672],['Rigel',5.2423,-8.2016],['Rigil Kentaurus',14.6599,-60.8354],['Sabik',17.1729,-15.7249],['Schedar',0.6751,56.5373],['Shaula',17.5601,-37.1038],['Sirius',6.7522,-16.7161],['Spica',13.4199,-11.1613],['Suhail',9.1333,-43.4326],['Vega',18.6156,38.7837],['Zubenelgenubi',14.8479,-16.0418]
+];
+function bodyPosition(body,date,obs){
+ const eq=Astronomy.Equator(body,date,obs,true,true);
+ const hor=Astronomy.Horizon(date,obs,eq.ra,eq.dec,'normal');
+ return{altitude:hor.altitude,azimuth:norm(hor.azimuth)};
+}
+function visibleObjects(){
+ if(!window.Astronomy||!$('gmtDate').value)return null;
+ try{
+  const date=parseUtcDateTime();
+  const obs=new Astronomy.Observer(parsePosition('lat','lat'),parsePosition('lon','lon'),0);
+  const catalog=[];
+  const add=(name,type,body,index=null)=>{
+   const p=bodyPosition(body,date,obs);
+   catalog.push({name,type,index,altitude:p.altitude,azimuth:p.azimuth});
+  };
+  add('Sun','Sun',Astronomy.Body.Sun);
+  add('Moon','Moon',Astronomy.Body.Moon);
+  ['Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'].forEach(name=>add(name,'planet',Astronomy.Body[name]));
+  NAV_STARS.forEach((s,i)=>{
+   Astronomy.DefineStar(Astronomy.Body.Star1,s[1],s[2],1000);
+   add(s[0],'star',Astronomy.Body.Star1,i);
+  });
+  return catalog;
+ }catch(e){return null}
+}
+let activeBodyCategory='all';
+const QUICK_STAR_NAMES=['Sirius','Canopus','Vega','Arcturus','Polaris','Aldebaran','Capella','Rigel','Spica','Altair','Antares','Procyon'];
+const QUICK_BODY_NAMES=['Sun','Moon','Venus','Mars','Jupiter','Saturn'];
+function selectedBodyKey(){const t=$('bodyType').value;return t==='star'?'star:'+$('starName').value:t==='planet'?'planet:'+ $('planet').value:t}
+function chooseCelestialObject(item){
+ $('bodyType').value=item.type;
+ if(item.type==='planet')$('planet').value=item.name;
+ if(item.type==='star')$('starName').value=String(item.index);
+ // Clear the previous filter so the full catalog is available after selection.
+ $('bodySearch').value='';
+ saveDraft();
+ updateAzimuthPreview();
+ renderCelestialCatalog();
+}
+function renderCelestialCatalogItems(catalog){
+ const list=$('celestialList'),quick=$('quickStars');
+ if(!catalog){
+  list.innerHTML='<div class="catalog-empty">Проверь дату GMT и координаты судна</div>';
+  quick.innerHTML='';
+  $('catalogCount').textContent='—';
+  return;
+ }
+ const query=$('bodySearch').value.trim().toLowerCase();
+ const showBelowStars=$('showBelowHorizonStars').checked;
+ const filtered=catalog.filter(item=>{
+  const category=activeBodyCategory==='all'||(activeBodyCategory==='star'&&item.type==='star')||(activeBodyCategory==='planet'&&item.type==='planet')||(activeBodyCategory==='luminary'&&(item.type==='Sun'||item.type==='Moon'));
+  const horizonFilter=item.type!=='star'||item.altitude>=0||showBelowStars;
+  return category&&horizonFilter&&item.name.toLowerCase().includes(query);
+ });
+ const key=selectedBodyKey();
+ $('catalogTitle').textContent=activeBodyCategory==='all'?'VISIBLE OBJECTS':activeBodyCategory==='star'?'VISIBLE STARS':activeBodyCategory==='planet'?'VISIBLE PLANETS':'SUN / MOON';
+ $('catalogCount').textContent=filtered.length+' / '+catalog.length;
+ list.innerHTML=filtered.length?filtered.map(item=>{
+  const itemKey=item.type==='star'?'star:'+item.index:item.type==='planet'?'planet:'+item.name:item.type;
+  const below=item.altitude<0,low=item.altitude>=0&&item.altitude<5;
+  return '<button type="button" class="celestial-option'+(itemKey===key?' selected':'')+((below||low)?' low-alt':'')+'" data-object-type="'+item.type+'" data-object-name="'+esc(item.name)+'" data-object-index="'+(item.index??'')+'"><b>'+esc(item.name)+'</b><small>Alt '+(item.altitude>=0?'+':'')+item.altitude.toFixed(1)+'° · Az '+f(item.azimuth)+'°'+(below?' · <span class="low-tag">BELOW HORIZON</span>':low?' · <span class="low-tag">LOW ALT</span>':'')+'</small></button>';
+ }).join(''):'<div class="catalog-empty">Нет объектов по этому запросу</div>';
+ const favorites=catalog.filter(item=>(item.type==='star'&&QUICK_STAR_NAMES.includes(item.name)&&item.altitude>=0)||QUICK_BODY_NAMES.includes(item.name));
+ const order={Sun:0,Moon:1,Venus:2,Mars:3,Jupiter:4,Saturn:5};
+ favorites.sort((a,b)=>{const ai=order[a.name]??(10+QUICK_STAR_NAMES.indexOf(a.name)),bi=order[b.name]??(10+QUICK_STAR_NAMES.indexOf(b.name));return ai-bi});
+ quick.innerHTML=favorites.map(item=>{const idx=item.type==='star'?item.index:'' ;return '<button type="button" data-object-type="'+item.type+'" data-object-name="'+esc(item.name)+'" data-object-index="'+idx+'">'+(item.type==='Sun'?'☀ ':item.type==='Moon'?'☾ ':item.type==='planet'?'◉ ':'★ ')+esc(item.name)+' · '+(item.altitude>=0?'↑ ':'↓ ')+item.altitude.toFixed(0)+'°</button>'}).join('');
+}
+function renderCelestialCatalog(){
+ const catalog=visibleObjects();
+ renderCelestialCatalogItems(catalog);
+}
+$('bodyCategories').addEventListener('click',event=>{
+ const button=event.target.closest('button[data-category]');if(!button)return;
+ activeBodyCategory=button.dataset.category;
+ $('bodyCategories').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===button));
+ renderCelestialCatalog();
+});
+$('bodySearch').addEventListener('input',renderCelestialCatalog);
+$('showBelowHorizonStars').addEventListener('change',renderCelestialCatalog);
+document.addEventListener('click',event=>{
+ const button=event.target.closest('button[data-object-type]');if(!button)return;
+ const item={type:button.dataset.objectType,name:button.dataset.objectName,index:button.dataset.objectIndex===''?null:Number(button.dataset.objectIndex)};
+ chooseCelestialObject(item);
+});
+function updateBodyFields(){updateAzimuthPreview()}
+$('bodyType').onchange=updateBodyFields;
+$('planet').onchange=updateAzimuthPreview;$('starName').onchange=updateAzimuthPreview;
+document.addEventListener('click',event=>{const button=event.target.closest('button[data-angle-target]');if(!button)return;const input=$(button.dataset.angleTarget);if(!input)return;const current=input.value.trim()===''?0:Number(input.value);if(!Number.isFinite(current))return;input.value=norm(Math.round((current+Number(button.dataset.angleStep))*10)/10).toFixed(1);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));});
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));['entry','quick','history','deviation'].forEach(id=>$(id).classList.toggle('hidden',b.dataset.view!==id));if(b.dataset.view==='history')render()});
+$('quickCalculate').onclick=()=>{
+ const fields=[['qTrueBearing','True Bearing',360],['qGyroBearing','Gyro Bearing',360],['qGyroHeading','Gyro Heading',360],['qCompassHeading','Compass Heading',360],['qVariation','Variation',180]];
+ const errors=[];
+ const values={};
+ fields.forEach(([id,label,max])=>{const raw=$(id).value.trim(),v=raw===''?null:Number(raw);if(v===null||!Number.isFinite(v)||v<0||v>max)errors.push(label+': введи значение от 0 до '+max+'°');else values[id]=v});
+ const box=$('quickValidation');
+ if(errors.length){box.className='validation-box show error';box.innerHTML='<b>Проверь исходные данные:</b><ul>'+errors.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';$('quickResults').classList.add('hidden');return}
+ box.className='validation-box';box.innerHTML='';
+ const variation=values.qVariation*Number($('qVariationDirection').value);
+ const gyroError=diff(values.qTrueBearing,values.qGyroBearing);
+ const trueHeading=norm(values.qGyroHeading+gyroError);
+ const compassError=diff(trueHeading,values.qCompassHeading);
+ const deviation=diff(compassError,variation);
+ $('qGyroError').textContent=signed(gyroError);
+ $('qTrueHeading').textContent=f(trueHeading);
+ $('qCompassError').textContent=signed(compassError);
+ $('qDeviation').textContent=signed(deviation);
+ const cardCheck=deviationCardComparison(deviation,values.qCompassHeading);$('qDeviationCardCheck').innerHTML=comparisonHtml(cardCheck);$('qDeviationCardCheck').classList.remove('hidden');$('qDeviationCardCheck').style.borderColor=cardCheck.status==='WARNING'?'#a9534a':cardCheck.status==='CHECK'?'#9a743b':'#477d65';
+ $('quickResults').classList.remove('hidden');
+};
+
+/* v1.11.0: ship deviation card and comparison */
+const DEVIATION_CARD_DEFAULT={values:[-0.1,0.6,-0.9,-1.9,-0.9,0.1,0.1,-1.0],warning:2,critical:3,date:'21 Apr 2028'};
+let deviationCard={...DEVIATION_CARD_DEFAULT,values:[...DEVIATION_CARD_DEFAULT.values]};
+function loadDeviationCard(){
+ try{const saved=JSON.parse(localStorage.getItem('compassDeviationCard')||'null');if(saved&&Array.isArray(saved.values)&&saved.values.length===8&&saved.values.every(Number.isFinite))deviationCard={...DEVIATION_CARD_DEFAULT,...saved,values:[...saved.values]}}catch(e){console.warn('Deviation Card load failed',e)}
+}
+function deviationCardInputs(){return [0,45,90,135,180,225,270,315].map((h,i)=>Number($('devCard'+String(h).padStart(3,'0')).value))}
+function persistDeviationCard(){
+ const values=deviationCardInputs(),warning=Number($('devWarnThreshold').value),critical=Number($('devCriticalThreshold').value),date=$('devCardDate').value.trim();
+ if(values.some(v=>!Number.isFinite(v)||Math.abs(v)>30)||!Number.isFinite(warning)||!Number.isFinite(critical)||warning<0||critical<=warning||critical>30){$('devCardStatus').textContent='Проверь значения: девиация ±30°, пороги должны быть корректными, Critical больше Warning.';return}
+ deviationCard={values,warning,critical,date};
+ try{localStorage.setItem('compassDeviationCard',JSON.stringify(deviationCard));$('devCardStatus').textContent='Карточка сохранена на этом устройстве · '+(date||'без даты');}catch(e){$('devCardStatus').textContent='Не удалось сохранить карточку: '+e.message}
+}
+function renderDeviationCardInputs(){
+ [0,45,90,135,180,225,270,315].forEach((h,i)=>$('devCard'+String(h).padStart(3,'0')).value=deviationCard.values[i]);
+ $('devWarnThreshold').value=deviationCard.warning;$('devCriticalThreshold').value=deviationCard.critical;$('devCardDate').value=deviationCard.date||'';
+ $('devCardStatus').textContent='Загружена карточка · '+(deviationCard.date||'дата не указана')+' · East (+) / West (−)';
+}
+function cardDeviationAt(heading){
+ const hs=[0,45,90,135,180,225,270,315],v=deviationCard.values;
+ let h=norm(heading),idx=hs.findIndex((x,i)=>h>=x&&(i===7||h<hs[i+1]));
+ if(idx<0)idx=7;
+ const next=(idx+1)%8,start=hs[idx],end=next===0?360:hs[next],target=h<start?h+360:h;
+ const t=(target-start)/(end-start);
+ return v[idx]+(v[next]-v[idx])*t;
+}
+function deviationCardComparison(actual,heading){
+ const expected=cardDeviationAt(heading),delta=diff(actual,expected),abs=Math.abs(delta);
+ const status=abs>deviationCard.critical?'WARNING':abs>deviationCard.warning?'CHECK':'NORMAL';
+ return {expected,actual,delta,abs,status,heading:norm(heading)};
+}
+function comparisonHtml(c){
+ const color=c.status==='WARNING'?'#ef9b91':c.status==='CHECK'?'#e9c17e':'#9bd8b6';
+ return '<b>DEVIATION CARD · '+c.status+'</b><br>Compass heading: '+f(c.heading)+'<br>Card deviation: '+signed(c.expected)+'<br>Calculated deviation: '+signed(c.actual)+'<br>Difference: <b style="color:'+color+'">'+c.abs.toFixed(1)+'°</b><br><span style="opacity:.8">Thresholds: CHECK > '+deviationCard.warning.toFixed(1)+'° · WARNING > '+deviationCard.critical.toFixed(1)+'°</span>';
+}
+loadDeviationCard();
+renderDeviationCardInputs();
+$('saveDeviationCard').onclick=()=>{persistDeviationCard()};
+$('resetDeviationCard').onclick=()=>{deviationCard={...DEVIATION_CARD_DEFAULT,values:[...DEVIATION_CARD_DEFAULT.values]};renderDeviationCardInputs();try{localStorage.setItem('compassDeviationCard',JSON.stringify(deviationCard))}catch{}};
+document.querySelectorAll('.dev-card-value,#devWarnThreshold,#devCriticalThreshold,#devCardDate').forEach(el=>el.addEventListener('change',()=>persistDeviationCard()));
+
+function n(id){let s=$(id).value.trim();return s===''?null:Number(s)}
+function requiredAngle(id,label){let v=n(id);if(v===null||!Number.isFinite(v)||v<0||v>360)throw Error(label+' должен быть в диапазоне 0–360°');return v}
+function parsePosition(id,kind){
+ const isLat=kind==='lat',degRaw=$(id+'Deg').value,minRaw=$(id+'Min').value,tenthRaw=$(id+'MinDec').value,hem=$(id+'Hem').value;
+ if(degRaw===''||minRaw===''||tenthRaw===''||!hem)throw Error('Заполни координаты судна полностью');
+ const deg=Number(degRaw),wholeMin=Number(minRaw),tenth=Number(tenthRaw),min=wholeMin+tenth/10;
+ if(!Number.isInteger(deg)||!Number.isInteger(wholeMin)||!Number.isInteger(tenth)||tenth<0||tenth>9)throw Error('Некорректный формат координат');
+ if(wholeMin<0||wholeMin>59)throw Error('Минуты координаты должны быть от 00 до 59');
+ const max=isLat?90:180;if(deg<0||deg>max||(deg===max&&min!==0))throw Error('Координата выходит за допустимый диапазон: '+(isLat?'широта 0–90°':'долгота 0–180°'));
+ if(isLat&&!['N','S'].includes(hem))throw Error('Для широты выбери N или S');
+ if(!isLat&&!['E','W'].includes(hem))throw Error('Для долготы выбери E или W');
+ return (hem==='S'||hem==='W'?-1:1)*(deg+min/60);
+}
+function parseUtcDateTime(){
+ const datePart=$('gmtDate').value,hh=Number($('gmtHour').value),mm=Number($('gmtMinute').value),ss=Number($('gmtSecond').value);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(datePart||'')||!Number.isInteger(hh)||hh<0||hh>23||!Number.isInteger(mm)||mm<0||mm>59||!Number.isInteger(ss)||ss<0||ss>59)throw Error('Укажи корректные дату, часы, минуты и секунды GMT/UTC.');
+ const [y,m,d]=datePart.split('-').map(Number),date=new Date(Date.UTC(y,m-1,d,hh,mm,ss));
+ if(date.getUTCFullYear()!==y||date.getUTCMonth()!==m-1||date.getUTCDate()!==d)throw Error('Такой даты не существует. Проверь дату наблюдения.');
+ return date;
+}
+function initTimeWheels(){const fill=(id,max)=>{$(id).innerHTML=Array.from({length:max+1},(_,i)=>'<option value="'+i+'">'+String(i).padStart(2,'0')+'</option>').join('')};fill('gmtHour',23);fill('gmtMinute',59);fill('gmtSecond',59)}
+initTimeWheels();
+function initCoordinateWheels(){
+ const fill=(id,max,format)=>{const el=$(id);el.innerHTML=Array.from({length:max+1},(_,i)=>'<option value="'+i+'">'+format(i)+'</option>').join('')};
+ fill('latDeg',90,v=>String(v).padStart(2,'0'));fill('lonDeg',180,v=>String(v).padStart(3,'0'));
+  const mins=Array.from({length:60},(_,i)=>'<option value="'+i+'">'+String(i).padStart(2,'0')+'</option>').join('');
+ const tenths=Array.from({length:10},(_,i)=>'<option value="'+i+'">'+i+'</option>').join('');
+ ['latMin','lonMin'].forEach(id=>$(id).innerHTML=mins);['latMinDec','lonMinDec'].forEach(id=>$(id).innerHTML=tenths);
+ $('latDeg').value='44';$('latMin').value='38';$('latMinDec').value='4';$('latHem').value='N';
+ $('lonDeg').value='7';$('lonMin').value='2';$('lonMinDec').value='5';$('lonHem').value='E';
+ ['latDeg','latMin','latMinDec','latHem','lonDeg','lonMin','lonMinDec','lonHem'].forEach(id=>$(id).addEventListener('change',updateAzimuthPreview));
+}
+initCoordinateWheels();
+function getAstro(){
+ if(!window.Astronomy)throw Error('Не загрузилась астрономическая библиотека. Проверь интернет-соединение и обнови страницу.');
+ const lat=parsePosition('lat','lat'),lon=parsePosition('lon','lon');
+ const date=parseUtcDateTime();
+ const obs=new Astronomy.Observer(lat,lon,0),type=$('bodyType').value;let body,bodyName;
+ if(type==='star'){const star=NAV_STARS[Number($('starName').value)];if(!star)throw Error('Выбери навигационную звезду');Astronomy.DefineStar(Astronomy.Body.Star1,star[1],star[2],1000);body=Astronomy.Body.Star1;bodyName=star[0]}
+ else if(type==='planet'){bodyName=$('planet').value;body=Astronomy.Body[bodyName]}
+ else{bodyName=type;body=Astronomy.Body[type]}
+ const eq=Astronomy.Equator(body,date,obs,true,true),hor=Astronomy.Horizon(date,obs,eq.ra,eq.dec,'normal');
+ return{date,az:norm(hor.azimuth),altitude:hor.altitude,lat,lon,bodyName};
+}
+function updateAzimuthPreview(){
+ const catalog=visibleObjects();
+ renderCelestialCatalog(catalog);
+ try{
+  const a=getAstro();
+  // Pre-fill gyro bearing with the nearest whole degree to the calculated true azimuth.
+  $('gyroBearing').value=String(norm(Math.round(a.az)));
+  saveDraft();
+  $('azPreviewValue').textContent=f(a.az);
+  $('azPreviewDetail').textContent=a.bodyName+' · '+$('gmtDate').value+' '+['gmtHour','gmtMinute','gmtSecond'].map(id=>$(id).value.padStart(2,'0')).join(':')+' GMT';
+  $('selectedVisibility').textContent='Altitude '+(a.altitude>=0?'+':'')+a.altitude.toFixed(1)+'° · True Azimuth '+f(a.az)+'°'+(a.altitude<5?' · НИЗКО НАД ГОРИЗОНТОМ':'');
+  $('azPreview').style.borderColor=a.altitude<5?'#9b6336':'var(--accent)';
+ }catch(e){
+  $('azPreviewValue').textContent='—';$('azPreviewDetail').textContent=e.message;$('selectedVisibility').textContent='';
+ }
+}
+['gmtDate','gmtHour','gmtMinute','gmtSecond'].forEach(id=>$(id).addEventListener('change',()=>{saveDraft();updateAzimuthPreview()}));
+function showValidation(errors,warnings){const box=$('validationBox');if(!errors.length&&!warnings.length){box.className='validation-box';box.innerHTML='';return}box.className='validation-box show'+(errors.length?' error':'');box.innerHTML=(errors.length?'<b>Нужно исправить:</b><ul>'+errors.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+(warnings.length?'<b style="display:block;margin-top:'+(errors.length?'10':'0')+'px">Проверь перед расчётом:</b><ul>'+warnings.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')}
+function validateInputs(){
+ const errors=[],warnings=[];
+ try{parseUtcDateTime()}catch(e){errors.push(e.message)}
+ try{parsePosition('lat','lat')}catch(e){errors.push(e.message)}
+ try{parsePosition('lon','lon')}catch(e){errors.push(e.message)}
+ [['headGyro','Gyro Heading'],['headMag','Compass Heading'],['gyroBearing','Gyro Bearing']].forEach(([id,label])=>{const v=n(id);if(v===null||!Number.isFinite(v)||v<0||v>360)errors.push(label+': введи значение от 0 до 360°')});
+ const variation=n('varVal');if(variation===null||!Number.isFinite(variation)||variation<0||variation>180)errors.push('Chart Variation: введи значение от 0 до 180°');
+ const heel=n('heel');if(heel!==null&&(!Number.isFinite(heel)||heel < -90||heel>90))errors.push('Heel должен быть в диапазоне от −90° до +90°');
+ if(heel!==null&&Number.isFinite(heel)&&Math.abs(heel)>15)warnings.push('Heel больше 15°. Проверь знак и величину крена. Это предупреждение не блокирует расчёт.');
+ [['headGyro','Gyro Heading'],['headMag','Compass Heading'],['gyroBearing','Gyro Bearing']].forEach(([id,label])=>{if(n(id)===360)warnings.push(label+' введён как 360°. Это эквивалентно 000°. Проверь, что значение намеренное.')});
+ if(variation!==null&&Number.isFinite(variation)&&variation>30)warnings.push('Chart Variation больше 30°. Проверь значение и направление по актуальной карте.');
+ return{errors,warnings};
+}
+$('calculate').onclick=()=>{
+ const check=validateInputs();showValidation(check.errors,check.warnings);if(check.errors.length){$('validationBox').scrollIntoView({behavior:'smooth',block:'center'});return}
+ try{
+  const a=getAstro(),gh=requiredAngle('headGyro','Gyro Heading'),mh=requiredAngle('headMag','Compass Heading'),gb=requiredAngle('gyroBearing','Gyro Bearing');
+  const vv=n('varVal');
+  const variation=vv*Number($('varDir').value),ge=diff(a.az,gb),trueHeading=norm(gh+ge),ce=diff(trueHeading,mh),dev=diff(ce,variation);
+  const bodyName=a.bodyName;
+  current={gmt:a.date.toISOString(),lat:a.lat,lon:a.lon,body:bodyName.trim(),azimuth:a.az,altitude:a.altitude,gyroBearing:gb,gyroError:ge,gyroHeading:gh,magHeading:mh,trueHeading,compassError:ce,variation,deviation:dev,heel:n('heel'),remarks:$('remarks').value.trim(),initials:$('initials').value.trim()};
+  $('taOut').textContent=f(a.az);$('altOut').textContent='Altitude '+(a.altitude>=0?'+':'')+a.altitude.toFixed(1)+'°';$('geOut').textContent=signed(ge);$('thOut').textContent=f(trueHeading);$('ceOut').textContent=signed(ce);$('varOut').textContent=signed(variation);$('devOut').textContent=signed(dev);
+  const mainCardCheck=deviationCardComparison(dev,mh);$('mainDeviationCardCheck').innerHTML=comparisonHtml(mainCardCheck);$('mainDeviationCardCheck').classList.remove('hidden');$('mainDeviationCardCheck').style.borderColor=mainCardCheck.status==='WARNING'?'#a9534a':mainCardCheck.status==='CHECK'?'#9a743b':'#477d65';
+  current.deviationCard={heading:mainCardCheck.heading,expected:mainCardCheck.expected,actual:mainCardCheck.actual,difference:mainCardCheck.delta,status:mainCardCheck.status,cardDate:deviationCard.date};
+  $('visibilityNote').textContent=a.altitude<0?'ВНИМАНИЕ: объект геометрически ниже горизонта в указанное время/месте. Проверь дату, GMT, координаты и наблюдение.':a.altitude<5?'Объект низко над горизонтом. Атмосферная рефракция и условия наблюдения могут заметно влиять на результат.':'Проверь совпадение выбранного объекта с фактически наблюдаемым телом и корректность исходных показаний.';
+  if(a.altitude<0)check.warnings.push('Выбранный объект ниже геометрического горизонта. Убедись, что объект и время указаны верно.');
+  if(a.altitude>=0&&a.altitude<5)check.warnings.push('Объект ниже 5° над горизонтом. Рефракция и условия наблюдения могут влиять на результат.');
+  showValidation([],check.warnings);$('result').classList.remove('hidden');
+ }catch(e){showValidation([e.message||String(e)],[]);$('validationBox').scrollIntoView({behavior:'smooth',block:'center'})}
+};
+$('save').onclick=()=>{if(!current)return;log.unshift(current);localStorage.setItem('compassErrorLog',JSON.stringify(log));localStorage.removeItem(DRAFT_KEY);render();alert('Запись сохранена в журнале этого браузера.')};
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){const body=$('rows');body.innerHTML=log.length?log.map(r=>'<tr><td>'+esc(r.gmt?.replace('T',' '))+'</td><td>'+r.lat.toFixed(4)+' / '+r.lon.toFixed(4)+'</td><td>'+esc(r.body)+'</td><td>'+f(r.azimuth)+'</td><td>'+f(r.gyroBearing)+'</td><td>'+signed(r.gyroError)+'</td><td>'+f(r.gyroHeading)+'</td><td>'+f(r.magHeading)+'</td><td>'+f(r.trueHeading)+'</td><td>'+signed(r.compassError)+'</td><td>'+signed(r.variation)+'</td><td>'+signed(r.deviation)+'</td><td>'+r.altitude.toFixed(1)+'°</td><td>'+esc(r.remarks)+'</td><td>'+esc(r.initials)+'</td></tr>').join(''):'<tr><td colspan="15" class="empty">Пока нет записей</td></tr>'}
+$('export').onclick=()=>{const keys=['gmt','lat','lon','body','azimuth','gyroBearing','gyroError','gyroHeading','magHeading','trueHeading','compassError','variation','deviation','altitude','heel','remarks','initials'],heads=['GMT','Latitude','Longitude','Celestial body','True azimuth','Gyro bearing','Gyro error','Gyro heading','Compass heading','True heading','Compass error','Variation','Deviation','Altitude','Heel','Remarks','Initials'];const csv='\ufeff'+[heads,...log.map(r=>keys.map(k=>r[k]??''))].map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='compass-error-log.csv';a.click();URL.revokeObjectURL(a.href)};
+$('clear').onclick=()=>{if(confirm('Удалить весь журнал?')){log=[];localStorage.removeItem('compassErrorLog');render()}};
+/* v1.7.0: JSON backup and restore for the local observation journal */
+$('backupExport').onclick=()=>{
+ try{
+  const payload={app:'Compass Error Log',formatVersion:1,exportedAt:new Date().toISOString(),observations:log};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='compass-error-log-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }catch(e){alert('Не удалось создать резервную копию: '+e.message)}
+};
+$('backupImport').onclick=()=>$('backupFile').click();
+$('backupFile').onchange=async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ try{
+  if(file.size>10*1024*1024)throw Error('Файл больше 10 МБ. Импорт отменён.');
+  const payload=JSON.parse(await file.text());
+  if(!payload||payload.app!=='Compass Error Log'||payload.formatVersion!==1||!Array.isArray(payload.observations))throw Error('Это не резервная копия Compass Error Log поддерживаемого формата.');
+  const valid=payload.observations.every(r=>r&&typeof r.gmt==='string'&&Number.isFinite(r.lat)&&Math.abs(r.lat)<=90&&Number.isFinite(r.lon)&&Math.abs(r.lon)<=180&&typeof r.body==='string'&&['azimuth','altitude','gyroBearing','gyroError','gyroHeading','magHeading','trueHeading','compassError','variation','deviation'].every(k=>Number.isFinite(r[k])));
+  if(!valid)throw Error('В файле обнаружены записи с некорректной структурой. Журнал не изменён.');
+  if(!confirm('В резервной копии '+payload.observations.length+' записей. Добавить их к текущему журналу? Существующие записи останутся.'))return;
+  const keys=new Set(log.map(r=>[r.gmt,r.body,r.lat,r.lon,r.azimuth,r.gyroBearing].join('|')));
+  let added=0;
+  payload.observations.forEach(r=>{const key=[r.gmt,r.body,r.lat,r.lon,r.azimuth,r.gyroBearing].join('|');if(!keys.has(key)){log.push(r);keys.add(key);added++}});
+  log.sort((a,b)=>String(b.gmt).localeCompare(String(a.gmt)));
+  localStorage.setItem('compassErrorLog',JSON.stringify(log));render();
+  alert('Импорт завершён. Добавлено записей: '+added+'. Дубликаты пропущены.');
+ }catch(e){alert('Импорт не выполнен: '+e.message)}
+ finally{event.target.value=''}
+};
+function updateDeviceStatus(){
+ const online=navigator.onLine,box=$('deviceStatus');
+ box.classList.toggle('online',online);box.classList.toggle('offline',!online);
+ $('connectionLabel').textContent=online?'Подключение к сети':'Офлайн-режим';
+ $('cacheLabel').textContent=online?'Данные журнала хранятся на устройстве':'Приложение работает из локального кэша';
+}
+window.addEventListener('online',updateDeviceStatus);window.addEventListener('offline',updateDeviceStatus);updateDeviceStatus();
+if('serviceWorker' in navigator)navigator.serviceWorker.ready.then(()=>{$('cacheLabel').textContent=navigator.onLine?'Офлайн-кэш готов · журнал на устройстве':'Офлайн-кэш доступен · журнал на устройстве'}).catch(()=>{});
+/* v1.8.0: restore last inputs and position, but always start with current UTC */
+const DRAFT_KEY='compassErrorDraft';
+try{
+ const draft=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');
+ if(draft&&typeof draft==='object'){
+  Object.entries(draft).forEach(([id,value])=>{if(id==='gmt')return;const el=$(id);if(el&&typeof value==='string')el.value=value});
+ }
+}catch(e){console.warn('Could not restore observation draft',e)}
+function saveDraft(){
+ const draft={};
+ document.querySelectorAll('#entry input, #entry select').forEach(el=>{if(el.id)draft[el.id]=el.value});
+ try{localStorage.setItem(DRAFT_KEY,JSON.stringify(draft))}catch(e){console.warn('Could not save observation draft',e)}
+}
+document.querySelectorAll('#entry input, #entry select').forEach(el=>{
+ el.addEventListener('input',saveDraft);
+ el.addEventListener('change',saveDraft);
+});
+
+render();updateAzimuthPreview();
+</script><script>
+/* v1.9.1: reliable update detection for installed iOS PWAs */
+if('serviceWorker' in navigator){
+ let appRegistration=null,lastUpdateCheck=0,reloadOnControllerChange=false;
+ const UPDATE_CHECK_INTERVAL=5*60*1000;
+ const updateNotice=$('updateNotice');
+ function showUpdate(worker){
+  if(!navigator.serviceWorker.controller||!worker)return;
+  $('updateVersion').textContent='Установлена новая версия. Нажми, чтобы перезапустить приложение.';
+  updateNotice.classList.add('show');
+ }
+ function watchInstalling(reg,worker=reg.installing){
+  if(!worker)return;
+  worker.addEventListener('statechange',()=>{
+   if(worker.state==='installed'&&navigator.serviceWorker.controller)showUpdate(reg.waiting||worker);
+  });
+ }
+ async function checkForUpdate(force=false){
+  if(!appRegistration||!navigator.onLine)return;
+  const now=Date.now();
+  if(!force&&now-lastUpdateCheck<UPDATE_CHECK_INTERVAL)return;
+  lastUpdateCheck=now;
+  try{
+   await appRegistration.update();
+   if(appRegistration.waiting&&navigator.serviceWorker.controller)showUpdate(appRegistration.waiting);
+   if(appRegistration.installing)watchInstalling(appRegistration,appRegistration.installing);
+  }catch(err){console.warn('PWA update check failed',err)}
+ }
+ window.addEventListener('load',async()=>{
+  try{
+   appRegistration=await navigator.serviceWorker.register('./service-worker.js',{scope:'./',updateViaCache:'none'});
+   appRegistration.addEventListener('updatefound',()=>watchInstalling(appRegistration));
+   if(appRegistration.installing)watchInstalling(appRegistration,appRegistration.installing);
+   if(appRegistration.waiting&&navigator.serviceWorker.controller)showUpdate(appRegistration.waiting);
+   await checkForUpdate(true);
+  }catch(err){console.warn('Offline cache registration failed',err)}
+ });
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkForUpdate(true)});
+ window.addEventListener('online',()=>checkForUpdate(true));
+ setInterval(()=>checkForUpdate(),UPDATE_CHECK_INTERVAL);
+ $('applyUpdate').addEventListener('click',()=>{
+  const waiting=appRegistration&&appRegistration.waiting;
+  if(!waiting)return;
+  reloadOnControllerChange=true;
+  waiting.postMessage({type:'SKIP_WAITING'});
+ });
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(reloadOnControllerChange){reloadOnControllerChange=false;window.location.reload()}
+ });
+}
+</script></body></html>
